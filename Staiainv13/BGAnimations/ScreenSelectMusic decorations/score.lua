@@ -267,7 +267,7 @@ t[#t+1] =
 	{
 	Name="Grades",
 	InitCommand=function(self)
-		self:xy(0,20):zoom(0.6):halign(0):maxwidth(50/0.6):settext("")
+		self:xy(-130,95):zoom(0.6):halign(0):maxwidth(50/0.6):settext("")
 	end,
 	DisplayCommand=function(self)
 		self:settext(THEME:GetString("Grade",ToEnumShortString(score:GetWifeGrade())))
@@ -279,7 +279,7 @@ t[#t+1] =
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Wife",
 	InitCommand=function(self)
-		self:xy(55,15):zoom(0.6):halign(0):settext("")
+		self:xy(-130,320):zoom(0.6):halign(0):settext("")
 	end,
 	DisplayCommand=function(self)
 		if score:GetWifeScore() == 0 then 
@@ -293,7 +293,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Score",
 	InitCommand=function(self)
-		self:xy(55,33):zoom(0.6):halign(0):settext("")
+		self:xy(-10,320):zoom(0.6):halign(1):settext("")
 	end,
 	DisplayCommand=function(self)
 		if score:GetWifeScore() == 0 then 
@@ -308,7 +308,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="ClearType",
 	InitCommand=function(self)
-		self:y(41):zoom(0.5):halign(0):halign(0):settext("No Play"):diffuse(color(colorConfig:get_data().clearType["NoPlay"]))
+		self:xy(-130,115):zoom(0.5):halign(0):halign(0):settext("No Play"):diffuse(color(colorConfig:get_data().clearType["NoPlay"]))
 	end,
 	DisplayCommand=function(self)
 		self:settext(getClearTypeFromScore(pn,score,0))
@@ -319,7 +319,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Combo",
 	InitCommand=function(self)
-		self:y(58):zoom(0.4):halign(0):settext("Max Combo:")
+		self:y(58):zoom(0):halign(0):settext("Max Combo:")
 	end,
 	DisplayCommand=function(self)
 		self:settextf("Max Combo: %d",score:GetMaxCombo())
@@ -344,7 +344,7 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Date",
 	InitCommand=function(self)
-		self:y(88):zoom(0.4):halign(0.5)
+		self:xy(-70,285):zoom(0.4):halign(0.5)
 	end,
 	DisplayCommand=function(self)
 		self:settext(""..getScoreDate(score))
@@ -406,7 +406,7 @@ t[#t+1] = Def.Quad{
 local function makeText(index)
 	return LoadFont("Common Normal")..{
 		InitCommand=function(self)
-			self:xy(frameWidth-offsetX- frameX,offsetY+15+(index*15)):zoom(fontScale+0.05):halign(1):settext("")
+			self:xy(-11,offsetY+49+(index*15)):zoom(fontScale+0.05):halign(1):settext("")
 		end,
 		DisplayCommand=function(self)
 			local count = 0
@@ -437,7 +437,7 @@ local function makeText(index)
 	}
 end
 
-for i=1,10 do
+for i=1,3 do
 	t[#t+1] =makeText(i)
 end
 
