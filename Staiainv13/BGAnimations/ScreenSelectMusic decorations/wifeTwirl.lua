@@ -430,6 +430,9 @@ t[#t+1] = Def.Sprite {
 	InitCommand=function(self)
 		self:xy(capWideScale(get43size(690),364)+50,capWideScale(get43size(85),255)):halign(0.5):valign(1);
 	end,
+		OnCommand = function(self)
+		self:spin():effectmagnitude(0,80,0)
+	end,
 	SetCommand=function(self)
 		self:finishtweening()
 		if GAMESTATE:GetCurrentSong() then
@@ -474,7 +477,7 @@ t[#t+1] = Def.Sprite {
 
 t[#t+1] = LoadFont("Common Large") .. {
 	InitCommand=function(self)
-		self:xy(frameX+260,frameY+30):halign(0):zoom(0.8)
+		self:xy(100,240):halign(0):zoom(0.4)
 	end,
 	BeginCommand=function(self)
 		self:queuecommand("Set")
