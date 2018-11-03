@@ -134,7 +134,7 @@ t[#t + 1] =
 		},
 	Def.Quad {
 		InitCommand = function(self)
-			self:xy(SCREEN_CENTER_X, AvatarY + 20):halign(0.5):zoomto(100, 30):diffusealpha(0)
+			self:xy(0,470):halign(0.5):zoomto(250, 30):diffusealpha(0)
 		end,
 		LoginFailedMessageCommand = function(self)
 			ms.ok("Login failed!")

@@ -47,10 +47,10 @@ local t = Def.ActorFrame{
 }
 
 local frameX = 10
-local frameY = 45
-local frameWidth = capWideScale(360,400)
-local frameHeight = 350
-local fontScale = 0.25
+local frameY = 101
+local frameWidth = 469
+local frameHeight = 330
+local fontScale = 0.45
 local scoresperpage = 25
 local scoreYspacing = 10
 local distY = 15
@@ -76,6 +76,10 @@ t[#t+1] = Def.Quad{InitCommand=function(self)
 	self:xy(frameX,frameY):zoomto(frameWidth,frameHeight):halign(0):valign(0):diffuse(color("#333333CC"))
 end}
 
+t[#t+1] = Def.Quad{InitCommand=function(self)
+	self:xy(10,400):zoomto(50,20):halign(0):valign(0):diffuse(color("#333333CC"))
+end}
+
 
 
 local function byValidity(valid)
@@ -93,7 +97,7 @@ end
 -- The input callback for mouse clicks already exists within the tabmanager and redefining it within the local scope does nothing but create confusion - mina
 local r = Def.ActorFrame{
 	InitCommand=function(self)
-		self:xy(frameX,frameY)
+		self:xy(10,50)
 	end,
 	OnCommand=function(self)
 		whee = SCREENMAN:GetTopScreen():GetMusicWheel()

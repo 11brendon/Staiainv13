@@ -55,7 +55,7 @@ function tabs(index)
 				self:diffusealpha(1)
 			else -- otherwise "Hide" them
 				self:y(frameY)
-				self:diffusealpha(0.65)
+				self:diffusealpha(1)
 			end
 		end,
 		TabChangedMessageCommand=function(self)
