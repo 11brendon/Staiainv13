@@ -16,40 +16,36 @@ local t = Def.ActorFrame{
 local frameX = THEME:GetMetric("ScreenTitleMenu","ScrollerX")-10
 local frameY = THEME:GetMetric("ScreenTitleMenu","ScrollerY")
 
---Left gray rectangle
-t[#t+1] = Def.Quad{
-	InitCommand=function(self)
-		self:xy(0,0):halign(0):valign(0):zoomto(250,900):diffuse(color("#161515")):diffusealpha(1)
-	end;
-};
+t[#t+1] = LoadActor("bn.png") .. { InitCommand=function(self) self:xy(0,-23):halign(0):valign(0):diffusealpha(1) end }
+t[#t+1] = LoadActor("bgscroll1.png") .. { InitCommand=function(self) self:xy(20,0):halign(0):valign(0):texcoordvelocity(0.002,-0.01):scaletocover(0,0,640,480) end }
+t[#t+1] = LoadActor("bgscroll2.png") .. { InitCommand=function(self) self:xy(0,30):halign(0):valign(0):texcoordvelocity(-0.002,-0.01):scaletocover(0,0,640,480) end }
+t[#t+1] = LoadActor("bgscroll3.png") .. { InitCommand=function(self) self:xy(100,0):halign(0):valign(0):texcoordvelocity(0.002,-0.01):scaletocover(0,0,640,480) end }
+t[#t+1] = LoadActor("bgscroll.png") .. { InitCommand=function(self) self:xy(30,0):halign(0):valign(0):texcoordvelocity(0.002,-0.01):scaletocover(0,0,640,480) end }
 
---Right gray rectangle
-t[#t+1] = Def.Quad{
+t[#t+1] = LoadFont("Common Formal") .. {
 	InitCommand=function(self)
-		self:xy(250,0):halign(0):valign(0):zoomto(1000,900):diffuse(color("#222222")):diffusealpha(1)
-	end;
-};
-
---Light purple line
-t[#t+1] = Def.Quad{
-	InitCommand=function(self)
-		self:xy(250,0):halign(0):valign(0):zoomto(10,900):diffuse(color("#b87cf0")):diffusealpha(1)
-	end;
-};
-
---Dark purple line
-t[#t+1] = Def.Quad{
-	InitCommand=function(self)
-		self:xy(260,0):halign(0):valign(0):zoomto(10,900):diffuse(color("#59307f")):diffusealpha(1)
-	end;
-};
-
-t[#t+1] = LoadFont("Common Large") .. {
-	InitCommand=function(self)
-		self:xy(42,frameY-62):zoom(0.65):valign(1):halign(0):diffuse(color("#b87cf0"))
+		self:xy(2,478):zoom(0.55):valign(1):halign(0)
 	end,
 	OnCommand=function(self)
-		self:settext(getThemeName())
+		self:settext("PRESS START")
+	end,
+}
+
+t[#t+1] = LoadFont("Common Formal") .. {
+	InitCommand=function(self)
+		self:xy(630,25):zoom(0.5):valign(1):halign(1):shadowlength(2)
+	end,
+	OnCommand=function(self)
+		self:settext("Etterna "..GAMESTATE:GetEtternaVersion()):diffuse(color("#999999"))
+	end,
+}
+
+t[#t+1] = LoadFont("Common Formal") .. {
+	InitCommand=function(self)
+		self:xy(2,25):zoom(0.5):valign(1):halign(0):shadowlength(2)
+	end,
+	OnCommand=function(self)
+		self:settextf("%i Songs", SONGMAN:GetNumSongs()):diffuse(color("#999999"))
 	end,
 }
 
