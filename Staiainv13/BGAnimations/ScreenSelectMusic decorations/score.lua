@@ -275,6 +275,8 @@ t[#t+1] =
 	end,
 }
 
+t[#t+1] = LoadActor("5.png") .. { InitCommand=function(self) self:xy(-162,-28):halign(0):valign(0):diffusealpha(1) end }
+
 -- Wife display
 t[#t+1] = LoadFont("Common Normal")..{
 	Name="Wife",
@@ -402,11 +404,11 @@ t[#t+1] = Def.Quad{
 		self:y((((frameHeight)/#rtTable[rates[rateIndex]])*scoreIndex) - headeroffY - offsetY+114)
 	end
 }
-
+--rates
 local function makeText(index)
 	return LoadFont("Common Normal")..{
 		InitCommand=function(self)
-			self:xy(-11,offsetY+49+(index*15)):zoom(fontScale+0.05):halign(1):settext("")
+			self:xy(-11,offsetY+46+(index*15)):zoom(fontScale+0.05):halign(1):settext("")
 		end,
 		DisplayCommand=function(self)
 			local count = 0
@@ -436,7 +438,7 @@ local function makeText(index)
 		end
 	}
 end
-
+--controls amount of rates displayed
 for i=1,3 do
 	t[#t+1] =makeText(i)
 end
@@ -599,12 +601,7 @@ t[#t + 1] =
 	}
 
 
--- matches the built-in online score header
-t[#t+1] = Def.Quad{
-	InitCommand=function(self)
-		self:xy(-frameX/2, -offsetY):zoomto(frameWidth - 10,24):halign(0):diffuse(color("#111111"))
-	end,
-}
+
 
 
 ret[#ret+1] = t
@@ -613,7 +610,7 @@ function nestedTabButton(i)
   return  
   Def.ActorFrame{
     InitCommand=function(self) 
-      self:xy(frameX + offsetX + (i-1)*(nestedTabButtonWidth), frameY + headeroffY)
+      self:xy(frameX-120 + offsetX + (i-1)*(50), frameY+70 + headeroffY)
 	  self:SetUpdateFunction(highlight)
     end, 
 	CollapseCommand=function(self)
