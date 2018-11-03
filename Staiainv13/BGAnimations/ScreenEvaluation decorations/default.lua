@@ -7,7 +7,6 @@ local customWindows = timingWindowConfig:get_data().customWindows
 local scoreType = themeConfig:get_data().global.DefaultScoreType
 
 
-
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand=function(self)
 		self:xy(SCREEN_CENTER_X,capWideScale(145,160)):zoom(0):maxwidth(180/0.4)
@@ -102,7 +101,7 @@ function scoreBoard(pn,position)
 	};
 	t[#t+1] = Def.Quad{
 		InitCommand=function(self)
-			self:xy(160,140):zoomto(frameWidth+119,80):halign(0):valign(0):diffuse(color("#030505CC"))
+			self:xy(160,140):zoomto(318,80):halign(0):valign(0):diffuse(color("#030505CC"))
 		end,
 	};
 	t[#t+1] = Def.Quad{
@@ -140,7 +139,7 @@ function scoreBoard(pn,position)
 	-- Wife percent
 	t[#t+1] = LoadFont("THENUMBERSMASON")..{
 		InitCommand=function(self)
-			self:xy(368,170):zoom(1):halign(0.5):valign(0):maxwidth(capWideScale(320,360))
+			self:xy(400,200):zoom(0.8):halign(0.5):valign(0):maxwidth(capWideScale(320,360))
 		end,
 		BeginCommand=function(self)
 			self:queuecommand("Set")
