@@ -44,11 +44,11 @@ t[#t+1] = Def.ActorFrame {
 		Name="StepsDisplayListRow",
 		CursorP1 = Def.ActorFrame {
 			InitCommand=function(self)
-				self:x(55):player(PLAYER_1)
+				self:xy(235,384):player(PLAYER_1)
 			end,
 			Def.Quad{
 				InitCommand=function(self)
-					self:zoomto(6,22):halign(1):valign(0.5)
+					self:zoomto(56,23):halign(0):valign(0.5):diffusealpha(0.3)self:diffuseshift():effectcolor1(color("#ffffff")):effectcolor2(color("#999999")):effectperiod(3)
 				end,
 				BeginCommand=function(self)
 					self:queuecommand("Set")
