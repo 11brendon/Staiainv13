@@ -1,0 +1,1 @@
+return LoadActor("bn.png") .. { InitCommand=function(self) self:xy(0,-23):halign(0):valign(0):diffusealpha(1) end }
