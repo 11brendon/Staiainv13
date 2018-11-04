@@ -42,10 +42,10 @@ t[#t+1] = LoadFont("Common Formal") .. {
 
 t[#t+1] = LoadFont("Common Formal") .. {
 	InitCommand=function(self)
-		self:xy(2,25):zoom(0.5):valign(1):halign(0):shadowlength(2)
+		self:xy(4,25):zoom(0.5):valign(1):halign(0):shadowlength(2)
 	end,
 	OnCommand=function(self)
-		self:settextf("%i Songs", SONGMAN:GetNumSongs()):diffuse(color("#999999"))
+		self:settextf("%i songs in %i groups", SONGMAN:GetNumSongs(), SONGMAN:GetNumSongGroups()):diffuse(color("#999999"))
 	end,
 }
 
