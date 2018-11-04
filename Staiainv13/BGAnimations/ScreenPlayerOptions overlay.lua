@@ -28,7 +28,7 @@ end
 -- P1 Avatar
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
-		self:xy(AvatarXP1-15,AvatarYP1-5):halign(0):valign(0):zoomto(250,40):diffuse(color("#000000")):diffusealpha(.8)
+		self:xy(AvatarXP1-15,AvatarYP1-5):halign(0):valign(0):zoomto(250,40):diffuse(color("#000000")):diffusealpha(0)
 	end;
 };
 
@@ -75,7 +75,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.Sprite {
 		Name="Image",
 		InitCommand=function(self)
-			self:visible(true):halign(0):valign(0):xy(AvatarXP1,AvatarYP1)
+			self:visible(false):halign(0):valign(0):xy(AvatarXP1,AvatarYP1)
 		end,
 		BeginCommand=function(self)
 			self:queuecommand("ModifyAvatar")
@@ -88,7 +88,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 	LoadFont("Common Normal") .. {
 		InitCommand=function(self)
-			self:xy(AvatarXP1+33,AvatarYP1+9):halign(0):zoom(0.45)
+			self:xy(AvatarXP1+33,AvatarYP1+9):halign(0):zoom(0)
 		end,
 		BeginCommand=function(self)
 			self:queuecommand("Set")
@@ -99,7 +99,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 	LoadFont("Common Normal") .. {
 		InitCommand=function(self)
-			self:xy(AvatarXP1+33,AvatarYP1+20):halign(0):zoom(0.40)
+			self:xy(AvatarXP1+33,AvatarYP1+20):halign(0):zoom(0)
 		end,
 		BeginCommand=function(self)
 			local speed, mode= GetSpeedModeAndValueFromPoptions(PLAYER_1)
@@ -137,18 +137,18 @@ t[#t+1] = Def.ActorFrame{
 --Frames
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
-		self:xy(0,0):halign(0):valign(0):zoomto(SCREEN_WIDTH,topFrameHeight):diffuse(color("#000000"))
+		self:xy(0,0):halign(0):valign(0):zoomto(SCREEN_WIDTH,topFrameHeight):diffuse(color("#000000")):diffusealpha(0)
 	end
 }
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
-		self:xy(0,topFrameHeight):halign(0):valign(1):zoomto(SCREEN_WIDTH,borderWidth):diffuse(getMainColor('highlight')):diffusealpha(0.5)
+		self:xy(0,topFrameHeight):halign(0):valign(1):zoomto(SCREEN_WIDTH,borderWidth):diffuse(getMainColor('highlight')):diffusealpha(0)
 	end
 }
 
 t[#t+1] = LoadFont("Common Large")..{
 	InitCommand=function(self)
-		self:xy(5,32):halign(0):valign(1):zoom(0.55):diffuse(getMainColor('positive')):settext("Player Options:")
+		self:xy(5,32):halign(0):valign(1):zoom(0):diffuse(getMainColor('positive')):settext("Player Options:")
 	end
 }
 
