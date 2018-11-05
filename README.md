@@ -19,3 +19,10 @@ Will add credits when finished
 - Untouched
 ## Color Config
 - Untouched
+
+---
+# Some screenies
+![enter image description here](https://i.imgur.com/LIUUsrZ.png)
+![enter image description here](https://i.imgur.com/CXJ6Ye5.png)
+![enter image description here](https://i.imgur.com/TlVrLzX.png)
+![enter image description here](https://i.imgur.com/aRDwv9c.png)
