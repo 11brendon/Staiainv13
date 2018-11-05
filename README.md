@@ -3,7 +3,9 @@ This is a port of Staiain's 3.95 theme
 
 This theme is not made from scratch, it is a very heavily modified version of Til Death
 
-Will add credits when finished
+Will add credits when finished.
+
+This theme is only compatible with 4:3 aspect ratio currently, so a 16:9 port will be made after this theme is finished.
 
 -11brendon#3190
 
