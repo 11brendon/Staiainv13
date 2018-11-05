@@ -10,13 +10,13 @@ function GetLocalProfiles()
 			LoadFont("Common Large") .. {
 				Text=string.format("%s: %.2f",profile:GetDisplayName(), profile:GetPlayerRating()),
 				InitCommand=function(self)
-					self:xy(34/2,-10):zoom(0.4):ztest(true,maxwidth,(200-34-4)/0.4)
+					self:xy(0,-10):zoom(0.6):ztest(true,maxwidth,(200-34-4)/0.4):maxwidth(320)
 				end	
 			},
 
 			LoadFont("Common Normal") .. {
 				InitCommand=function(self)
-					self:xy(34/2,8):zoom(0.5):vertspacing(-8):ztest(true):maxwidth((200-34-4)/0.5)
+					self:xy(0/2,8):zoom(0.3):vertspacing(-8):ztest(true):maxwidth((200-34-4)/0.5)
 				end,
 				BeginCommand=function(self)
 					local numSongsPlayed = profile:GetNumTotalSongsPlayed()
@@ -36,7 +36,7 @@ function GetLocalProfiles()
 				ModifyAvatarCommand=function(self)
 					self:finishtweening()
 					self:LoadBackground(THEME:GetPathG("","../"..getAvatarPathFromProfileID(profileID)))
-					self:zoomto(30,30)
+					self:zoomto(0,0)
 				end
 			}
 
@@ -51,18 +51,18 @@ function LoadCard(cColor)
 	local t = Def.ActorFrame {
 		Def.Quad {
 			InitCommand=function(self)
-				self:zoomto(200+4,230+4)
+				self:zoomto(200+4,380+4)
 			end;
 			OnCommand=function(self)
-				self:diffuse(color("1,1,1,1"))
+				self:diffuse(color("#585A5A"))
 			end;
 		};
 		Def.Quad {
 			InitCommand=function(self)
-				self:zoomto(200,230)
+				self:zoomto(200,380)
 			end;
 			OnCommand=function(self)
-				self:diffusealpha(0.5):diffuse(cColor)
+				self:diffusealpha(0.5):diffuse(color("#000000AA"))
 			end;
 		};
 	};
@@ -108,14 +108,14 @@ function LoadPlayerStuff(Player)
 
 	t[#t+1] = Def.ActorScroller{
 		Name = 'Scroller';
-		NumItemsToDraw=6;
+		NumItemsToDraw=7;
 		OnCommand=function(self)
-			self:y(1):SetFastCatchup(true):SetMask(200,58):SetSecondsPerItem(0.15)
+			self:y(-2):SetFastCatchup(true):SetSecondsPerItem(0.15)
 		end;
 		TransformFunction=function(self, offset, itemIndex, numItems)
 			local focus = scale(math.abs(offset),0,2,1,0);
 			self:visible(false);
-			self:y(math.floor( offset*40 ));
+			self:y(math.floor( offset*50 ));
 		end;
 		children = GetLocalProfiles();
 	};
@@ -126,7 +126,7 @@ function LoadPlayerStuff(Player)
 	t[#t+1] = LoadFont("Common Normal") .. {
 		Name = 'SelectedProfileText',
 		InitCommand=function(self)
-			self:y(160):maxwidth(SCREEN_WIDTH*0.9)
+			self:y(210):maxwidth(SCREEN_WIDTH*0.9)
 		end	
 	}
 
@@ -284,11 +284,5 @@ t[#t+1] = Def.ActorFrame{
 		};
 	};
 };
-t[#t+1] = LoadActor("_frame");
-t[#t+1] = LoadFont("Common Large")..{
-	InitCommand=function(self)
-		self:xy(5,32):halign(0):valign(1):zoom(0.55):diffuse(getMainColor('positive')):settext("Select Profile:")
-	end;
-}
 
 return t;
