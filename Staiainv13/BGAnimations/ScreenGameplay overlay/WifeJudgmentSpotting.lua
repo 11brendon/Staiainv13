@@ -1041,7 +1041,7 @@ separate entities. So you can have both, or one or the other, or neither.
 --==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--
 local width = SCREEN_WIDTH/2-100
 local height = 10
-local alpha = 0.7
+local alpha = 0
 --==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--
 
 local p = Def.ActorFrame{
@@ -1061,12 +1061,12 @@ local p = Def.ActorFrame{
 		end,
 		StreamWidth=width,
 		Stream=Def.Quad{InitCommand=function(self)
-			self:zoomy(height):diffuse(getMainColor("highlight"))
+			self:zoomy(0):diffuse(getMainColor("highlight"))
 		end}
 	},
 	LoadFont("Common Normal")..{																		-- title
 		InitCommand=function(self)
-			self:zoom(0.35):maxwidth(width*2)
+			self:zoom(0.35):maxwidth(width*2):y(-15)
 		end,
 		BeginCommand=function(self)
 			self:settext(GAMESTATE:GetCurrentSong():GetDisplayMainTitle())
@@ -1077,7 +1077,7 @@ local p = Def.ActorFrame{
 	},
 	LoadFont("Common Normal")..{																		-- total time
 		InitCommand=function(self)
-			self:x(width/2):zoom(0.35):maxwidth(width*2):halign(1)
+			self:x(width/2):zoom(0):maxwidth(width*2):halign(1)
 		end,
 		BeginCommand=function(self)
 			local ttime = GetPlayableTime()
@@ -1170,7 +1170,7 @@ local GetBPS = SongPosition.GetCurBPS
 
 local function UpdateBPM(self)
 	local bpm = GetBPS(a) * r
-	settext(BPM,Round(bpm,2))
+	settext(BPM,Round(bpm,2).."\nBPM")
 end
 
 t[#t+1] = Def.ActorFrame{
@@ -1180,13 +1180,13 @@ t[#t+1] = Def.ActorFrame{
 			self:SetUpdateFunction(UpdateBPM)
 			self:SetUpdateRate(0.5)
 		else
-			BPM:settextf("%5.2f",GetBPS(a) * r) -- i wasn't thinking when i did this, we don't need to avoid formatting for performance because we only call this once -mina
+			BPM:settextf("%5.2f \nBPM",GetBPS(a) * r) -- i wasn't thinking when i did this, we don't need to avoid formatting for performance because we only call this once -mina
 		end
 	end,
-	LoadFont("Common Normal")..{
+	LoadFont("THENUMBERSMASON")..{
 		Name="BPM",
 		InitCommand=function(self)
-			self:x(SCREEN_CENTER_X):y(SCREEN_BOTTOM-20):halign(0.5):zoom(0.40)
+			self:x(180):y(SCREEN_BOTTOM-15):halign(0.5):zoom(0.45):shadowlength(1)
 		end	
 	},
 	DoneLoadingNextSongMessageCommand=function(self)
