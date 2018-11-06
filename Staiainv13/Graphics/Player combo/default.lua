@@ -80,13 +80,13 @@ local t = Def.ActorFrame {
 	LoadFont( "Combo", "numbers" ) .. {
 		Name="Number",
 		InitCommand=function(self)
-			self:xy(x-4,y):zoom(zoom - 0.1):halign(1):valign(1):skewx(-0.125):visible(false)
+			self:xy(x-30,y):zoom(zoom + 0.3):halign(0.5):valign(1):visible(false)
 		end,
 	},
 	LoadFont("Common Normal") .. {
 		Name="Label",
 		InitCommand=function(self)
-			self:xy(x,y):zoom(zoom):diffusebottomedge(color("0.75,0.75,0.75,1")):halign(0):valign(1):visible(false)
+			self:xy(x,y):zoom(zoom):diffusebottomedge(color("#AAAAAA")):halign(0):valign(1):visible(false)
 		end,
 	},
 	InitCommand = function(self)
@@ -105,31 +105,31 @@ local t = Def.ActorFrame {
 			return
 		end
 		
-		c.Label:settext("COMBO")
+		c.Label:settext("")
 		c.Number:visible(true)
 		c.Label:visible(true)
-		c.Number:settext(iCombo)
+		c.Number:settext(iCombo):diffuse(color("#AAAAAA"))
 		
 		-- FullCombo Rewards
 		if param.FullComboW1 then
-			c.Number:diffuse(color("#00aeef"))
+			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:glowshift()
 		elseif param.FullComboW2 then
-			c.Number:diffuse(color("#fff568"))
+			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:glowshift()
 		elseif param.FullComboW3 then
-			c.Number:diffuse(color("#a4ff00"))
+			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:stopeffect()
 		elseif param.Combo then
-			c.Number:diffuse(Color("White"))
+			c.Number:diffuse(Color("#AAAAAA"))
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("Blue"))
-			c.Label:diffusebottomedge(color("0.75,0.75,0.75,1"))
+			c.Label:diffuse(Color("#AAAAAA"))
+			c.Label:diffusebottomedge(color("#AAAAAA"))
 		else
-			c.Number:diffuse(color("#ff0000"))
+			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("Red"))
-			c.Label:diffusebottomedge(color("0.5,0,0,1"))
+			c.Label:diffuse(Color("#AAAAAA"))
+			c.Label:diffusebottomedge(color("#AAAAAA"))
 		end
 	end
 }
