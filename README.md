@@ -15,6 +15,9 @@ This theme is only compatible with 4:3 aspect ratio currently, so a 16:9 port wi
 ## Music Select
 - Online Scores, Profile, Filters, Goals, Playlists, Packs, & Tags tabs need finished
 - Difficulty display does not fully go off screen when a tab transition happens
+- Remove avatar select
+## Gameplay Screen
+- Add custom progress bar
 ## Player Options
 - Needs proper bg pane
 ## Multiplayer/SMO
