@@ -5,7 +5,9 @@ This theme is not made from scratch, it is a very heavily modified version of Ti
 
 Will add credits when finished.
 
-This theme is only compatible with 4:3 aspect ratio currently, so a 16:9 port will be made after this theme is finished. Also only updated as far as 0.61.0.
+This theme is only compatible with 4:3 aspect ratio currently, so a 16:9 port will be made after this theme is finished. 
+
+Working on getting 0.62.1 features integrated but the theme will still work on it and previous versions.
 
 -11brendon#3190
 
