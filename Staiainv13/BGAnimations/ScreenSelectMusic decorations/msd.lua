@@ -16,9 +16,15 @@ local steps
 local meter = {}
 meter[1] = 0.00
 
+local cd -- chord density graph
+
 --Actor Frame
-local t = Def.ActorFrame{
+local t =
+	Def.ActorFrame{
 	BeginCommand=function(self)
+		cd = self:GetChild("ChordDensityGraph")
+		cd:playcommand("GraphUpdate")		-- force the first update before setting visible(false) (so it's not empty when switching to the tab) -mina
+		cd:xy(163,100):zoomto(1.14,2.35):visible(false)
 		self:queuecommand("Set"):visible(false)
 	end,
 	OffCommand=function(self)
@@ -48,9 +54,15 @@ local t = Def.ActorFrame{
 			end
 			
 			MESSAGEMAN:Broadcast("UpdateMSDInfo")
+			if song and steps then
+				cd:visible(true)
+			else
+				cd:visible(false)
+			end	
 			update = true
 		else 
 			self:queuecommand("Off")
+			cd:visible(false)
 			update = false
 		end
 	end,
@@ -240,5 +252,6 @@ for i=1,#ms.SkillSets do
 	t[#t+1] = littlebits(i)
 end
 
+t[#t + 1] = LoadActor("../_chorddensitygraph.lua")
 
 return t
