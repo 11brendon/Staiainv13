@@ -1,14 +1,5 @@
 local function input(event)
 	local top = SCREENMAN:GetTopScreen()
-	if event.DeviceInput.button == 'DeviceButton_left mouse button' then
-		if event.type == "InputEventType_Release" then
-			if not SCREENMAN:get_input_redirected(PLAYER_1) then
-				if isOver(top:GetChild("Overlay"):GetChild("PlayerAvatar"):GetChild("Avatar"..PLAYER_1):GetChild("Image")) then
-					SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
-				end
-			end
-		end
-	end
 	if event.DeviceInput.button == "DeviceButton_left mouse button" and event.type == "InputEventType_Release" then
 		MESSAGEMAN:Broadcast("MouseLeftClick")
 	elseif event.DeviceInput.button == "DeviceButton_right mouse button" and event.type == "InputEventType_Release" then
@@ -29,13 +20,6 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("tabs")
 
-t[#t+1] = Def.Actor{
-	CodeMessageCommand=function(self,params)
-		if params.Name == "AvatarShow" and getTabIndex() == 0 and not SCREENMAN:get_input_redirected(PLAYER_1) then
-			SCREENMAN:AddNewScreenToTop("ScreenAvatarSwitch")
-		end
-	end
-}
 t[#t+1] = Def.Quad{
 		InitCommand=function(self)
 			self:xy(0,466):zoomto(640,17):halign(0):valign(0):diffuse(color("#030505CC"))
