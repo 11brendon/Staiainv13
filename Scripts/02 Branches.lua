@@ -46,6 +46,35 @@ Branch = {
 			return "ScreenStageInformation"
 		end
 	end,
+	PlayerOptions = function()
+		local pm = GAMESTATE:GetPlayMode()
+		local restricted = {
+			--"PlayMode_Battle" -- ??
+		}
+		local optionsScreen = "ScreenPlayerOptions"
+		for i = 1, #restricted do
+			if restricted[i] == pm then
+				optionsScreen = "ScreenPlayerOptionsRestricted"
+			end
+		end
+		if SCREENMAN:GetTopScreen():GetGoToOptions() then
+			return optionsScreen
+		else
+			return "ScreenStageInformation"
+		end
+	end,
+	BackOutOfPlayerOptions = function()
+		return "ScreenSelectMusic"
+	end,
+	BackOutOfNetPlayerOptions = function()
+		return "ScreenNetSelectMusic"
+	end,
+	BackOutOfStageInformation = function()
+		return "ScreenSelectMusic"
+	end,
+	BackOutOfNetStageInformation = function()
+		return "ScreenNetSelectMusic"
+	end,
 	MultiScreen = function()
 		if IsNetSMOnline() then
 			if not IsSMOnlineLoggedIn(PLAYER_1) then
