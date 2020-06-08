@@ -28,7 +28,7 @@ local isGlobalRanking = true
 
 -- will eat any mousewheel inputs to scroll pages while mouse is over the background frame
 local function input(event)
-	if cheese:GetVisible() and isOver(cheese:GetChild("FrameDisplay")) then
+	if isOver(cheese:GetChild("FrameDisplay")) then -- visibility checks are built into isover now -mina
 		if event.DeviceInput.button == "DeviceButton_mousewheel up" and event.type == "InputEventType_FirstPress" then
 			moving = true
 			cheese:queuecommand("PrevPage")
@@ -43,36 +43,11 @@ local function input(event)
 	return false
 end
 
-local function isOver(element)
-	if element:GetParent():GetParent():GetVisible() == false then
-		return false
-	end
-	if element:GetParent():GetVisible() == false then
-		return false
-	end
-	if element:GetVisible() == false then
-		return false
-	end
-	local x = getTrueX(element)
-	local y = getTrueY(element)
-	local hAlign = element:GetHAlign()
-	local vAlign = element:GetVAlign()
-	local w = element:GetZoomedWidth()
-	local h = element:GetZoomedHeight()
-
-	local mouseX = INPUTFILTER:GetMouseX()
-	local mouseY = INPUTFILTER:GetMouseY()
-
-	local withinX = (mouseX >= (x - (hAlign * w))) and (mouseX <= ((x + w) - (hAlign * w)))
-	local withinY = (mouseY >= (y - (vAlign * h))) and (mouseY <= ((y + h) - (vAlign * h)))
-
-	return (withinX and withinY)
-end
-
 local function highlight(self)
-	--SCREENMAN:SystemMessage("x: "..tostring(INPUTFILTER:GetMouseX()).." y:"..tostring(INPUTFILTER:GetMouseY()))
-	self:queuecommand("Highlight")
-	self:queuecommand("WHAZZZAAAA")
+	if self:IsVisible() then
+		self:queuecommand("Highlight")
+		self:queuecommand("WHAZZZAAAA")
+	end
 end
 
 local function highlightIfOver(self)
@@ -90,30 +65,56 @@ local function byAchieved(scoregoal)
 	return color("#aaaaaa")
 end
 
-local filts = {"All Rates", "Current Rate"}
-local topornah = {"Top Scores", "All Scores"}
+local filts = {
+	"All Rates",
+	"Current Rate"
+}
+local topornah = {
+	"Top Scores",
+	"All Scores"
+}
+local ccornah = {
+	"Show Invalid",
+	"Hide Invalid"
+}
 
-local scoretable
+local translated_info = {
+	LoginToView = "Login to view scores",
+	NoScoresFound = "Online scores not tracked...",
+	RetrievingScores = "Retrieving scores...",
+	Watch = "Watch"
+}
+
+local scoretable = {}
 local o =
 	Def.ActorFrame {
 	Name = "ScoreDisplay",
 	InitCommand = function(self)
 		cheese = self
 		self:SetUpdateFunction(highlight)
+		self:SetUpdateFunctionInterval(0.05)
 	end,
 	BeginCommand = function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(input)
+		self:playcommand("Update")
 	end,
-	OnCommand = function(self)
-		GetPlayerOrMachineProfile(PLAYER_1):SetFromAll()
-		self:queuecommand("ChartLeaderboardUpdate")
+	GetFilteredLeaderboardCommand = function(self)
+		if GAMESTATE:GetCurrentSong() then
+			scoretable = DLMAN:GetChartLeaderBoard(GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey(), currentCountry)
+			ind = 0
+			self:playcommand("Update")
+		end
 	end,
-	ChartLeaderboardUpdateMessageCommand = function(self)
-		scoretable = DLMAN:RequestChartLeaderBoard(GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey(), currentCountry)
+	SetFromLeaderboardCommand = function(self, lb)
+		scoretable = lb
 		ind = 0
+		self:playcommand("GetFilteredLeaderboard") -- we can move all the filter stuff to lua so we're not being dumb hurr hur -mina
 		self:playcommand("Update")
 	end,
 	UpdateCommand = function(self)
+		if not scoretable then
+			scoretable = {}
+		end
 		if ind == #scoretable then
 			ind = ind - numscores
 		elseif ind > #scoretable - (#scoretable % numscores) then
@@ -215,6 +216,7 @@ local o =
 				self:GetParent():GetParent():playcommand("Collapse")
 			elseif isOver(self) then
 				self:GetParent():GetParent():playcommand("Expand")
+				SCREENMAN:GetTopScreen():PausePreviewNoteField()
 			end
 		end
 	},
@@ -261,14 +263,26 @@ local o =
 			UpdateCommand = function(self)
 				local numberofscores = #scoretable
 				local online = DLMAN:IsLoggedIn()
-				if not online and #scoretable == 0 then
-					self:settext("Login to view scores")
+				if not GAMESTATE:GetCurrentSong() then
+					self:settext("")
+				elseif not online and #scoretable == 0 then
+					self:settext(translated_info["LoginToView"])
 				else
 					if #scoretable == 0 then
-						self:settext("Retrieving scores...")
+						self:settext(translated_info["NoScoresFound"])
 					else
 						self:settext("")
 					end
+				end
+			end,
+			CurrentSongChangedMessageCommand = function(self)
+				local online = DLMAN:IsLoggedIn()
+				if not GAMESTATE:GetCurrentSong() then
+					self:settext("")
+				elseif not online and #scoretable == 0 then
+					self:settext(translated_info["LoginToView"])
+				else
+					self:settext(translated_info["NoScoresFound"])
 				end
 			end
 		},
@@ -292,7 +306,7 @@ local o =
 				if isOver(self) then
 					DLMAN:ToggleRateFilter()
 					ind = 0
-					self:GetParent():queuecommand("ChartLeaderboardUpdate")
+					self:GetParent():queuecommand("GetFilteredLeaderboard")
 				end
 			end
 		},
@@ -303,7 +317,7 @@ local o =
 				if collapsed then
 					self:xy(c5x - 175, headeroff):zoom(tzoom):halign(1)
 				else
-					self:xy(c5x - 115, headeroff):zoom(tzoom):halign(1)
+					self:xy(c5x - 160, headeroff):zoom(tzoom):halign(1)
 				end
 			end,
 			HighlightCommand = function(self)
@@ -320,7 +334,37 @@ local o =
 				if isOver(self) then
 					DLMAN:ToggleTopScoresOnlyFilter()
 					ind = 0
-					self:GetParent():queuecommand("ChartLeaderboardUpdate")
+					self:GetParent():queuecommand("GetFilteredLeaderboard")
+				end
+			end
+		},
+	LoadFont("Common normal") ..
+		{
+			--ccon/off filter toggle
+			InitCommand = function(self)
+				if collapsed then
+					self:visible(false)
+					--self:xy(c5x - 110, headeroff):zoom(tzoom):halign(1):valign(1)
+				else
+					self:visible(true)
+					self:xy(c5x - 80, headeroff):zoom(tzoom):halign(1)
+				end
+			end,
+			HighlightCommand = function(self)
+				highlightIfOver(self)
+			end,
+			UpdateCommand = function(self)
+				if DLMAN:GetCCFilter() then
+					self:settext(ccornah[1])
+				else
+					self:settext(ccornah[2])
+				end
+			end,
+			MouseLeftClickMessageCommand = function(self)
+				if isOver(self) then
+					DLMAN:ToggleCCFilter()
+					ind = 0
+					self:GetParent():queuecommand("GetFilteredLeaderboard")
 				end
 			end
 		}
@@ -336,12 +380,19 @@ local function makeScoreDisplay(i)
 			if i > numscores then
 				self:visible(false)
 			end
+			self:SetUpdateFunction(function(self)
+				self:queuecommand("PercentMouseover")
+			end)
+			self:SetUpdateFunctionInterval(0.025)
+		end,
+		CurrentSongChangedMessageCommand = function(self)
+			self:visible(false)
 		end,
 		UpdateCommand = function(self)
 			hs = scoretable[(i + ind)]
 			if hs and i <= numscores then
-				self:queuecommand("Display")
 				self:visible(true)
+				self:playcommand("Display")
 			else
 				self:visible(false)
 			end
@@ -354,8 +405,8 @@ local function makeScoreDisplay(i)
 				self:diffuse(color("#111111CC"))
 			end,
 			HighlightCommand = function(self)
-				if isOver(self) and collapsed then
-					self:diffusealpha(1)
+				if isOver(self) then
+					self:diffusealpha(0.8)
 				else
 					self:diffusealpha(0.6)
 				end
@@ -407,7 +458,7 @@ local function makeScoreDisplay(i)
 			},
 		LoadFont("Common normal") ..
 			{
-				--name
+				Name = "Burt" .. i,
 				InitCommand = function(self)
 					self:x(c2x):zoom(tzoom + 0.1):maxwidth((c3x - c2x - capWideScale(10, 40)) / tzoom):halign(0):valign(1)
 					if collapsed then
@@ -434,7 +485,7 @@ local function makeScoreDisplay(i)
 			},
 		LoadFont("Common normal") ..
 			{
-				--judgments
+				Name = "Ernie" .. i,
 				InitCommand = function(self)
 					if not collapsed then
 						self:x(c2x):zoom(tzoom - 0.05):halign(0):valign(0):maxwidth(width / 2 / tzoom):addy(row2yoff)
@@ -466,7 +517,84 @@ local function makeScoreDisplay(i)
 			},
 		LoadFont("Common normal") ..
 			{
+				Name = "Replay" .. i,
+				InitCommand = function(self)
+					if not collapsed then
+						self:x(capWideScale(c3x + 52, c3x)):zoom(tzoom - 0.05):halign(1):valign(0):maxwidth(width / 2 / tzoom):addy(
+							row2yoff
+						):diffuse(getMainColor("enabled"))
+					end
+				end,
+				BeginCommand = function(self)
+					if SCREENMAN:GetTopScreen():GetName() == "ScreenNetSelectMusic" then
+						self:visible(false)
+					end
+				end,
+				DisplayCommand = function(self)
+					if GAMESTATE:GetCurrentSteps(PLAYER_1) then
+						if hs:HasReplayData() then
+							self:settext(translated_info["Watch"])
+						else
+							self:settext("")
+						end
+					end
+				end,
+				HighlightCommand = function(self)
+					highlightIfOver(self)
+				end,
+				MouseLeftClickMessageCommand = function(self)
+					if isOver(self) and hs then
+						DLMAN:RequestOnlineScoreReplayData(
+							hs,
+							function()
+								SCREENMAN:GetTopScreen():PlayReplay(hs)
+							end
+						)
+					end
+				end,
+				CollapseCommand = function(self)
+					self:visible(false)
+				end,
+				ExpandCommand = function(self)
+					self:visible(true):addy(-row2yoff)
+				end
+			},
+		Def.Quad {
+				InitCommand = function(self)
+					self:x(c5x):zoomto(50,10):halign(1):valign(1)
+					if collapsed then
+						self:x(c5x):zoomto(40, 10):halign(1):valign(0.5)
+					end
+					self:diffusealpha(0)
+				end,
+				PercentMouseoverCommand = function(self)
+					if isOver(self) and self:IsVisible() then
+						self:GetParent():GetChild("NormalText"):visible(false)
+						self:GetParent():GetChild("LongerText"):visible(true)
+					else
+						self:GetParent():GetChild("NormalText"):visible(true)
+						self:GetParent():GetChild("LongerText"):visible(false)
+					end
+				end,
+				MouseLeftClickMessageCommand = function(self)
+					if isOver(self) and hs and not collapsed then
+						if SCREENMAN:GetTopScreen():GetName() == "ScreenNetSelectMusic" then return end
+						if hs:HasReplayData() then
+							DLMAN:RequestOnlineScoreReplayData(
+								hs,
+								function()
+									setScoreForPlot(hs)
+									SCREENMAN:AddNewScreenToTop("ScreenScoreTabOffsetPlot")					
+								end
+							)
+						end
+					end
+				end
+			},
+		LoadFont("Common normal") ..
+			{
 				--percent
+				Name="NormalText",
 				InitCommand = function(self)
 					self:x(c5x):zoom(tzoom + 0.15):halign(1):valign(1)
 					if collapsed then
@@ -474,7 +602,21 @@ local function makeScoreDisplay(i)
 					end
 				end,
 				DisplayCommand = function(self)
-					self:settextf("%05.2f%%", hs:GetWifeScore() * 10000 / 100):diffuse(byGrade(hs:GetWifeGrade()))
+					self:settextf("%05.2f%%", notShit.floor(hs:GetWifeScore() * 100, 2)):diffuse(byGrade(hs:GetWifeGrade()))
+				end
+			},
+			LoadFont("Common normal") ..
+			{
+				--percent
+				Name="LongerText",
+				InitCommand = function(self)
+					self:x(c5x):zoom(tzoom + 0.15):halign(1):valign(1)
+					if collapsed then
+						self:x(c5x):zoom(tzoom + 0.15):halign(1):valign(0.5):maxwidth(30 / tzoom)
+					end
+				end,
+				DisplayCommand = function(self)
+					self:settextf("%05.4f%%", notShit.floor(hs:GetWifeScore() * 100, 5)):diffuse(byGrade(hs:GetWifeGrade()))
 				end
 			},
 		LoadFont("Common normal") ..
@@ -486,7 +628,11 @@ local function makeScoreDisplay(i)
 					end
 				end,
 				DisplayCommand = function(self)
-					self:settext(hs:GetDate())
+					if IsUsingWideScreen() then
+						self:settext(hs:GetDate())
+					else
+						self:settext(hs:GetDate():sub(1, 10))
+					end
 				end,
 				CollapseCommand = function(self)
 					self:visible(false)
@@ -503,40 +649,4 @@ for i = 1, numscores do
 	o[#o + 1] = makeScoreDisplay(i)
 end
 
---[[
---Commented for now
--- Todo: make the combobox scrollable
--- To handle a large amount of choices
-local countryDropdown
-countryDropdown =
-	Widg.ComboBox {
-	onSelectionChanged = function(newChoice)
-		currentCountry = newChoice
-		cheese:queuecommand("ChartLeaderboardUpdate")
-	end,
-	choice = "Global",
-	choices = DLMAN:GetCountryCodes(),
-	commands = {
-		CollapseCommand = function(self)
-			self:xy(c5x - 20, headeroff - 20):halign(0)
-		end,
-		ExpandCommand = function(self)
-			self:xy(c5x - 89, headeroff)
-		end,
-		ChartLeaderboardUpdateMessageCommand = function(self)
-			self:visible(DLMAN:IsLoggedIn())
-		end
-	},
-	selectionColor = color("#111111"),
-	itemColor = color("#111111"),
-	hoverColor = getMainColor("highlight"),
-	height = tzoom * 29,
-	width = 50,
-	x = c5x - 89, -- needs to be thought out for design purposes
-	y = headeroff,
-	visible = DLMAN:IsLoggedIn(),
-	numitems = 4
-}
-o[#o + 1] = countryDropdown
-]]
 return o

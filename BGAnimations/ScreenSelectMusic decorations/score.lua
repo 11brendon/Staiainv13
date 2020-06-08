@@ -83,20 +83,37 @@ local function highlightIfOver(self)
 		self:diffusealpha(1)
 	end
 end
-
+local moped
 -- Only works if ... it should work
 -- You know, if we can see the place where the scores should be.
 local function updateLeaderBoardForCurrentChart()
 	local top = SCREENMAN:GetTopScreen()
-	if top:GetMusicWheel():IsSettled() and ((getTabIndex() == 2 and nestedTab == 2) or collapsed) then
-		local chartkey = GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey()
-		DLMAN:RequestChartLeaderBoardFromOnline(chartkey)
+	if top:GetName() == "ScreenSelectMusic" or top:GetName() == "ScreenNetSelectMusic" then
+		if top:GetMusicWheel():IsSettled() and ((getTabIndex() == 2 and nestedTab == 2) or collapsed) then
+			local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
+			if steps then
+				local leaderboardAttempt = DLMAN:GetChartLeaderboard(steps:GetChartKey())
+				if #leaderboardAttempt > 0 then
+					moped:playcommand("SetFromLeaderboard", leaderboardAttempt)
+				else
+					DLMAN:RequestChartLeaderBoardFromOnline(
+						steps:GetChartKey(),
+						function(leaderboard)
+							moped:queuecommand("SetFromLeaderboard", leaderboard)
+						end
+					)
+				end
+			else
+				moped:playcommand("SetFromLeaderboard", {})
+			end
+		end
 	end
 end
 
 local ret =
 	Def.ActorFrame{
 	BeginCommand=function(self)
+		moped = self:GetChild("ScoreDisplay")
 		self:queuecommand("Set"):visible(false)
 		self:GetChild("LocalScores"):visible(false)
 		self:GetChild("ScoreDisplay"):xy(frameX,frameY):visible(false)
@@ -139,6 +156,14 @@ local ret =
 		self:queuecommand("Set")
 		updateLeaderBoardForCurrentChart()
 	end,
+	NestedTabChangedMessageCommand = function(self)
+		self:queuecommand("Set")
+		updateLeaderBoardForCurrentChart()
+	end,
+	CurrentStepsP1ChangedMessageCommand = function(self)
+		self:queuecommand("Set")
+		updateLeaderBoardForCurrentChart()
+	end,
 	UpdateChartMessageCommand=function(self)
 		self:queuecommand("Set")
 	end,
@@ -154,6 +179,60 @@ local ret =
 		end
 		self:GetChild("ScoreDisplay"):xy(frameX,frameY)
 		MESSAGEMAN:Broadcast("TabChanged")
+	end,
+	DelayedChartUpdateMessageCommand = function(self)
+		local leaderboardEnabled =
+			playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).leaderboardEnabled and DLMAN:IsLoggedIn()
+		if GAMESTATE:GetCurrentSteps(PLAYER_1) then
+			local chartkey = GAMESTATE:GetCurrentSteps(PLAYER_1):GetChartKey()
+			if leaderboardEnabled then
+			DLMAN:RequestChartLeaderBoardFromOnline(
+				chartkey,
+				function(leaderboard)
+					moped:playcommand("SetFromLeaderboard", leaderboard)
+				end
+			)	-- this is also intentionally super bad so we actually do something about it -mina
+			elseif (SCREENMAN:GetTopScreen():GetName() == "ScreenSelectMusic" or SCREENMAN:GetTopScreen():GetName() == "ScreenNetSelectMusic") and ((getTabIndex() == 2 and nestedTab == 2) or collapsed) then
+				DLMAN:RequestChartLeaderBoardFromOnline(
+				chartkey,
+				function(leaderboard)
+					moped:playcommand("SetFromLeaderboard", leaderboard)
+				end
+			)
+			end
+		end
+	end,
+	CodeMessageCommand = function(self, params) -- this is intentionally bad to remind me to fix other things that are bad -mina
+		if ((getTabIndex() == 2 and nestedTab == 2) and not collapsed) and DLMAN:GetCurrentRateFilter() then
+			local rate = getCurRateValue()
+			if params.Name == "PrevScore" and rate < 2.95 then
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(rate + 0.1)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate(rate + 0.1)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(rate + 0.1)
+				MESSAGEMAN:Broadcast("CurrentRateChanged")
+			elseif params.Name == "NextScore" and rate > 0.75 then
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(rate - 0.1)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate(rate - 0.1)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(rate - 0.1)
+				MESSAGEMAN:Broadcast("CurrentRateChanged")
+			end
+			if params.Name == "PrevRate" and rate < 3 then
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(rate + 0.05)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate(rate + 0.05)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(rate + 0.05)
+				MESSAGEMAN:Broadcast("CurrentRateChanged")
+			elseif params.Name == "NextRate" and rate > 0.7 then
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred"):MusicRate(rate - 0.05)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate(rate - 0.05)
+				GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate(rate - 0.05)
+				MESSAGEMAN:Broadcast("CurrentRateChanged")
+			end
+		end
+	end,
+	CurrentRateChangedMessageCommand = function(self)
+		if ((getTabIndex() == 2 and nestedTab == 2) or collapsed) and DLMAN:GetCurrentRateFilter() then
+			moped:queuecommand("GetFilteredLeaderboard")
+		end
 	end
 }
 
