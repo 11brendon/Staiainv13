@@ -85,5 +85,47 @@ Branch = {
 		else
 			return "ScreenNetworkOptions"
 		end
-	end
+	end,
+	AfterGameplay = function()
+		return "ScreenEvaluationNormal"
+	end,
+	AfterNetGameplay = function()
+		return "ScreenNetEvaluation"
+	end,
+	AfterEvaluation = function()
+		local allFailed = STATSMAN:GetCurStageStats():AllFailed()
+		local song = GAMESTATE:GetCurrentSong()
+
+		if GAMESTATE:IsEventMode() or stagesLeft >= 1 then
+			return "ScreenProfileSave"
+		elseif song:IsLong() and maxStages <= 2 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif song:IsMarathon() and maxStages <= 3 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif maxStages >= 2 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif allFailed then
+			return "ScreenProfileSaveSummary"
+		else
+			return "ScreenProfileSave"
+		end
+	end,
+	AfterNetEvaluation = function()
+		local allFailed = STATSMAN:GetCurStageStats():AllFailed()
+		local song = GAMESTATE:GetCurrentSong()
+
+		if GAMESTATE:IsEventMode() or stagesLeft >= 1 then
+			return "ScreenNetProfileSave"
+		elseif song:IsLong() and maxStages <= 2 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif song:IsMarathon() and maxStages <= 3 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif maxStages >= 2 and stagesLeft < 1 and allFailed then
+			return "ScreenProfileSaveSummary"
+		elseif allFailed then
+			return "ScreenProfileSaveSummary"
+		else
+			return "ScreenNetProfileSave"
+		end
+	end,
 }
