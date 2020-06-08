@@ -45,5 +45,16 @@ Branch = {
 		else
 			return "ScreenStageInformation"
 		end
+	end,
+	MultiScreen = function()
+		if IsNetSMOnline() then
+			if not IsSMOnlineLoggedIn(PLAYER_1) then
+				return "ScreenNetSelectProfile"
+			else
+				return "ScreenNetRoom"
+			end
+		else
+			return "ScreenNetworkOptions"
+		end
 	end
 }
