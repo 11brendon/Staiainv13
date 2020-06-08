@@ -128,4 +128,22 @@ Branch = {
 			return "ScreenNetProfileSave"
 		end
 	end,
+	AfterProfileSave = function()
+		if GAMESTATE:IsEventMode() then
+			return "ScreenSelectMusic"
+		elseif STATSMAN:GetCurStageStats():AllFailed() then
+			return GameOverOrContinue()
+		else
+			return "ScreenSelectMusic"
+		end
+	end,
+	AfterNetProfileSave = function()
+		if GAMESTATE:IsEventMode() then
+			return "ScreenNetSelectMusic"
+		elseif STATSMAN:GetCurStageStats():AllFailed() then
+			return GameOverOrContinue()
+		else
+			return "ScreenNetSelectMusic"
+		end
+	end,
 }
