@@ -30,7 +30,8 @@ end
 local function updateGraphMultiVertex(parent, realgraph)
 	local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
 	if steps then
-		local graphVectors = steps:GetCDGraphVectors()
+		local rate = math.max(1, getCurRateValue())
+		local graphVectors = steps:GetCDGraphVectors(rate)
 		if graphVectors == nil then
 			-- reset everything if theres nothing to show
 			realgraph:SetVertices({})
