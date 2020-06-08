@@ -35,7 +35,7 @@ function GetLocalProfiles()
 				end,
 				ModifyAvatarCommand=function(self)
 					self:finishtweening()
-					self:LoadBackground(THEME:GetPathG("","../"..getAvatarPathFromProfileID(profileID)))
+					self:LoadBackground(getAssetPathFromProfileID("avatar", profileID))
 					self:zoomto(0,0)
 				end
 			}
