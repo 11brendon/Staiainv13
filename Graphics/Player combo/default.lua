@@ -121,14 +121,14 @@ local t = Def.ActorFrame {
 			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:stopeffect()
 		elseif param.Combo then
-			c.Number:diffuse(Color("#AAAAAA"))
+			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("#AAAAAA"))
+			c.Label:diffuse(color("#AAAAAA"))
 			c.Label:diffusebottomedge(color("#AAAAAA"))
 		else
 			c.Number:diffuse(color("#AAAAAA"))
 			c.Number:stopeffect()
-			c.Label:diffuse(Color("#AAAAAA"))
+			c.Label:diffuse(color("#AAAAAA"))
 			c.Label:diffusebottomedge(color("#AAAAAA"))
 		end
 	end
