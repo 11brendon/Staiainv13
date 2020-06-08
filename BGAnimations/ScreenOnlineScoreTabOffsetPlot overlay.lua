@@ -7,6 +7,14 @@ local plotWidth, plotHeight = SCREEN_WIDTH,SCREEN_WIDTH*0.3
 local plotX, plotY = SCREEN_CENTER_X, SCREEN_CENTER_Y
 local dotDims, plotMargin = 2, 4
 local judge = GetTimingDifficulty()
+
+-- we removed j1-3 so uhhh this stops things lazily
+local function clampJudge()
+	if judge < 4 then judge = 4 end
+	if judge > 9 then judge = 9 end
+end
+clampJudge()
+
 local maxOffset = math.max(180, 180*tst[judge])
 
 local o = Def.ActorFrame{
@@ -19,8 +27,10 @@ local o = Def.ActorFrame{
 		end
 		if params.Name == "PrevJudge" and judge > 1 then
 			judge = judge - 1
+			clampJudge()
 		elseif params.Name == "NextJudge" and judge < 9 then
 			judge = judge + 1
+			clampJudge()
 		end
 		maxOffset = math.max(180, 180*tst[judge])	
 		MESSAGEMAN:Broadcast("JudgeDisplayChanged")

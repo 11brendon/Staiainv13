@@ -5,11 +5,12 @@ local tst = ms.JudgeScalers
 local judge = GetTimingDifficulty()
 local tso = tst[judge]
 
-local enabledCustomWindows = playerConfig:get_data(pn_to_profile_slot(PLAYER_1)).CustomEvaluationWindowTimings
-judge = enabledCustomWindows and 0 or judge
-local customWindowsData = timingWindowConfig:get_data()
-local customWindows = customWindowsData.customWindows
-local customWindow
+-- we removed j1-3 so uhhh this stops things lazily
+local function clampJudge()
+	if judge < 4 then judge = 4 end
+	if judge > 9 then judge = 9 end
+end
+clampJudge()
 
 local plotWidth, plotHeight = 316,54
 local plotX, plotY = 320, 432
@@ -74,19 +75,13 @@ local o = Def.ActorFrame{
 		MESSAGEMAN:Broadcast("JudgeDisplayChanged")		-- prim really handled all this much more elegantly		
 	end,
 	CodeMessageCommand=function(self,params)
-		if enabledCustomWindows then
-			if params.Name == "PrevJudge" then
-				judge = judge < 2 and #customWindows or judge - 1
-				customWindow = customWindowsData[customWindows[judge]]
-			elseif params.Name == "NextJudge" then
-				judge = judge == #customWindows and 1 or judge + 1
-				customWindow = customWindowsData[customWindows[judge]]
-			end
-		elseif params.Name == "PrevJudge" and judge > 1 then
+		if params.Name == "PrevJudge" and judge > 1 then
 			judge = judge - 1
+			clampJudge()
 			tso = tst[judge]
 		elseif params.Name == "NextJudge" and judge < 9 then
 			judge = judge + 1
+			clampJudge()
 			tso = tst[judge]
 		elseif params.Name == "ToggleHands" and #ctt > 0 then --super ghetto toggle -mina
 			if not handspecific then
@@ -100,10 +95,11 @@ local o = Def.ActorFrame{
 			MESSAGEMAN:Broadcast("JudgeDisplayChanged")
 		end
 		if params.Name == "ResetJudge" then
-			judge = enabledCustomWindows and 0 or GetTimingDifficulty()
+			judge = GetTimingDifficulty()
+			clampJudge()
 			tso = tst[GetTimingDifficulty()]
 		end
-		maxOffset = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo or math.max(180, 180*tso)
+		maxOffset = math.max(180, 180*tso)
 		MESSAGEMAN:Broadcast("JudgeDisplayChanged")
 	end,
 	UpdateNetEvalStatsMessageCommand = function(self)		-- i haven't updated or tested neteval during last round of work -mina
@@ -135,14 +131,14 @@ for i=1, #fantabars do
 	o[#o+1] = Def.Quad{
 		JudgeDisplayChangedMessageCommand=function(self)
 			self:zoomto(plotWidth+plotMargin,1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
-			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso*fantabars[i]
+			local fit = tso*fantabars[i]
 			self:y( fitY(fit))
 		end
 	}
 	o[#o+1] = Def.Quad{
 		JudgeDisplayChangedMessageCommand=function(self)
 			self:zoomto(plotWidth+plotMargin,1):diffuse(byJudgment(bantafars[i])):diffusealpha(baralpha)
-			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows[judges[i]] or tso*fantabars[i]
+			local fit = tso*fantabars[i]
 			self:y( fitY(-fit))
 		end
 	}
@@ -161,8 +157,8 @@ o[#o+1] = Def.ActorMultiVertex{
 		for i=1,#dvt do
 			local x = fitX(wuab[i])
 			local y = fitY(dvt[i])
-			local fit = (enabledCustomWindows and judge ~= 0) and customWindow.judgeWindows.boo + 3 or math.max(183, 183*tso)
-			local cullur = (enabledCustomWindows and judge ~= 0) and customOffsetToJudgecullur(dvt[i], customWindow.judgeWindows) or offsetToJudgeColor(dvt[i], tst[judge])
+			local fit = math.max(183, 183*tso)
+			local cullur = offsetToJudgeColor(dvt[i], tst[judge])
 			if math.abs(y) > plotHeight/2 then
 				y = fitY(fit)
 			end
