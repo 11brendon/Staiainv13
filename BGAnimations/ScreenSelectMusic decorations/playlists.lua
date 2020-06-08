@@ -93,7 +93,7 @@ local function BroadcastIfActive(msg)
 end
 
 local function ButtonActive(self,scale)
-	return isOverScaled(self,scale) and update
+	return isOver(self) and update
 end
 
 local r = Def.ActorFrame{
