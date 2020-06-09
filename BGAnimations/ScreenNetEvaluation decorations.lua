@@ -4,9 +4,6 @@ PROFILEMAN:SaveProfile(PLAYER_1)
 
 local scoreType = themeConfig:get_data().global.DefaultScoreType
 
-if GAMESTATE:GetNumPlayersEnabled() == 1 and themeConfig:get_data().eval.ScoreBoardEnabled then
-	t[#t+1] = LoadActor("ScreenEvaluation decorations/scoreboard")
-end
 
 local getRescoreElements = function(pss, score)
 	local o = {}

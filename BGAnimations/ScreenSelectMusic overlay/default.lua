@@ -12,9 +12,7 @@ local t = Def.ActorFrame{
 	BeginCommand=function(self) 
 		local s = SCREENMAN:GetTopScreen()
 		s:AddInputCallback(input) 
-		if s:GetName() == "ScreenNetSelectMusic" then
-			s:UsersVisible(false) 
-		end
+
 	end
 }
 

@@ -3,7 +3,6 @@ GAMESTATE:SetCurrentStyle("single")
 GAMESTATE:SetCurrentPlayMode('PlayMode_Regular')
 
 local t = Def.ActorFrame{
-	OnCommand=function(self) SCREENMAN:GetTopScreen():UsersVisible(false) end
 }
 
 t[#t+1] = LoadActor("../_frame")
