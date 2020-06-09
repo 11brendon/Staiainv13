@@ -19,7 +19,10 @@ t[#t+1] = LoadFont("Common Normal")..{
 	end
 }
 
-local getRescoreElements = function(pss, score)
+local dvt
+local totalTaps
+
+local function getRescoreElements(pss, score)
 	local o = {}
 	o["dvt"] = pss:GetOffsetVector()
 	o["totalHolds"] = pss:GetRadarPossible():GetValue("RadarCategory_Holds") + pss:GetRadarPossible():GetValue("RadarCategory_Rolls")
@@ -80,10 +83,17 @@ local frameWidth = SCREEN_CENTER_X-120
 function scoreBoard(pn,position)
 	
 	local judge = GetTimingDifficulty()
-	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1)
 	local score = SCOREMAN:GetMostRecentScore()
 	local dvt = pss:GetOffsetVector()
 	local totalTaps = pss:GetTotalTaps()
+
+	if not score then 
+		score = SCOREMAN:GetTempReplayScore()
+	end
+
+	dvt = pss:GetOffsetVector()
+	totalTaps = pss:GetTotalTaps()
 
 	-- we removed j1-3 so uhhh this stops things lazily
 	local function clampJudge()
