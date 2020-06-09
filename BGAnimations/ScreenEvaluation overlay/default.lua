@@ -4,24 +4,11 @@ t[#t+1] = LoadActor("../_PlayerInfo")
 t[#t+1] = LoadActor("currenttime")
 
 local function gradestring(tier)
-	if tier == "Grade_Tier01" then
-		return 'GradeDisplayEval Tier01.png'
-	elseif tier == "Grade_Tier02" then
-		return 'GradeDisplayEval Tier02.png'
-	elseif tier == "Grade_Tier03" then
-		return 'GradeDisplayEval Tier03.png'
-	elseif tier == "Grade_Tier04" then
-		return 'GradeDisplayEval Tier04.png'
-	elseif tier == "Grade_Tier05" then
-		return 'GradeDisplayEval Tier05.png'
-	elseif tier == "Grade_Tier06" then
-		return 'GradeDisplayEval Tier06.png'
-	elseif tier == "Grade_Tier07" then
-		return 'GradeDisplayEval Tier07.png'
-	elseif tier == 'Grade_Failed' then
+	if tier == 'Grade_Failed' then
 		return 'GradeDisplayEval Failed.png'
 	else
-		return tier
+		local lvl = tier:sub(-2)
+		return 'GradeDisplayEval Tier'..lvl..'.png'
 	end
 end
 
