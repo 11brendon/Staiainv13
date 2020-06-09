@@ -146,4 +146,14 @@ Branch = {
 			return "ScreenNetSelectMusic"
 		end
 	end,
+	AfterNetSelectProfile = function()
+		return SMOnlineScreen()
+	end,
+	AfterSMOLogin = SMOnlineScreen,
+	Network = function()
+		return IsNetConnected() and Branch.MultiScreen() or "ScreenTitleMenu"
+	end,
+	BackOutOfNetwork = function()
+		return "ScreenTitleMenu"
+	end,
 }
