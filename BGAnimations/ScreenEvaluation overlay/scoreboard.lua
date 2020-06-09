@@ -1,23 +1,5 @@
 function gradestring(tier) --to be moved
-	if tier == "Grade_Tier01" then
-		return 'AAAA'
-	elseif tier == "Grade_Tier02" then
-		return 'AAA'
-	elseif tier == "Grade_Tier03" then
-		return 'AA'
-	elseif tier == "Grade_Tier04" then
-		return 'A'
-	elseif tier == "Grade_Tier05" then
-		return 'B'
-	elseif tier == "Grade_Tier06" then
-		return 'C'
-	elseif tier == "Grade_Tier07" then
-		return 'D'
-	elseif tier == 'Grade_Failed' then
-		return 'F'
-	else
-		return tier
-	end
+	return getGradeStrings(tier)
 end
 
 local lines = 3 -- number of scores to display
@@ -193,7 +175,7 @@ local function scoreitem(pn,index,scoreIndex,drawindex)
 		--max combo
 		LoadFont("Common normal")..{
 			InitCommand=function(self)
-				self:xy(framex+13+capWideScale(get43size(0),50),framey+8+(drawindex*spacing)):zoom(0.35):halign(0.5):maxwidth((frameWidth-15)/0.35)
+				self:xy(framex+13+capWideScale(get43size(0),50),framey+8+(drawindex*spacing)):zoom(0.35):halign(0):maxwidth((frameWidth-15)/0.35)
 			end,
 			BeginCommand=function(self)
 				if #hsTable >= 1 and index>= 1 then
