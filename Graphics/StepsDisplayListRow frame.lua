@@ -12,14 +12,12 @@ t[#t+1] = Def.Quad{
 		self:x(22):zoomto(66,22):diffuse(color("#ffffff")):diffusealpha(0)
 	end,
 	MouseLeftClickMessageCommand=function(self)
-		if isOver(self) then
+		if isOver(self) and self:GetParent():GetParent():GetDiffuseAlpha() > 0 then
 			local s = GAMESTATE:GetCurrentSong()
 			if s then
-				local index = math.floor((getTrueY(self)-70)/24)+1
-				local allSteps = SongUtil.GetPlayableSteps(s)
-				local steps = allSteps[index]
-				if steps and steps ~= GAMESTATE:GetCurrentSteps(PLAYER_1) then
-					GAMESTATE:SetCurrentSteps(PLAYER_1, steps)
+				local idx = self:GetParent():GetParent():GetIndex() - self:GetParent():GetParent():GetParent():GetCurrentIndex()
+				if idx ~= 0 then
+					SCREENMAN:GetTopScreen():ChangeSteps(idx)
 				end
 			end
 		end
