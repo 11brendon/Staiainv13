@@ -10,6 +10,7 @@ This theme is only compatible with 4:3 aspect ratio currently, so a 16:9 port wi
 Working on getting 0.69.1 features integrated but the theme will still work on it and previous versions.
 
 -11brendon#3190
+
 -poco0317
 
 ---
