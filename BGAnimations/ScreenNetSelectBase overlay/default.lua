@@ -1,6 +1,5 @@
 -- forcibly set the game style to single so we dont crash when loading songs
 GAMESTATE:SetCurrentStyle("single")
-GAMESTATE:SetCurrentPlayMode('PlayMode_Regular')
 
 local t = Def.ActorFrame{
 }
